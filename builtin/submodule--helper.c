@@ -1725,10 +1725,17 @@ static int gitmodules_update_clone_config(const char *var, const char *value,
 	return 0;
 }
 
+static void update_submodule(struct submodule_update_clone_information *suci)
+{
+	fprintf(stdout, "dummy %s %d\t%s\n",
+		oid_to_hex(&suci->oid),
+		suci->just_cloned,
+		suci->sub->path);
+}
+
 static int update_submodules(struct submodule_update_clone *suc)
 {
 	int i;
-	struct strbuf sb = STRBUF_INIT;
 
 	run_processes_parallel(suc->max_jobs,
 			       update_clone_get_next_task,
@@ -1747,16 +1754,9 @@ static int update_submodules(struct submodule_update_clone *suc)
 	if (suc->quickstop)
 		return 1;
 
-	for (i = 0; i < suc->submodule_lines_nr; i++) {
-		strbuf_addf(&sb, "dummy %s %d\t%s\n",
-			oid_to_hex(&suc->submodule_lines[i].oid),
-			suc->submodule_lines[i].just_cloned,
-			suc->submodule_lines[i].sub->path);
-		fprintf(stdout, "%s", sb.buf);
-		strbuf_reset(&sb);
-	}
+	for (i = 0; i < suc->submodule_lines_nr; i++)
+		update_submodule(&suc->submodule_lines[i]);
 
-	strbuf_release(&sb);
 	return 0;
 }
 
