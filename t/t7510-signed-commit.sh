@@ -227,4 +227,13 @@ test_expect_success GPG 'log.showsignature behaves like --show-signature' '
 	grep "gpg: Good signature" actual
 '
 
+test_expect_success GPG 'check config gpg.format values' '
+	test_config gpg.format openpgp &&
+	git commit -S --amend -m "success" &&
+	test_config gpg.format OpEnPgP &&
+	git commit -S --amend -m "success" &&
+	test_config gpg.format malformed &&
+	test_must_fail git commit -S --amend -m "fail"
+'
+
 test_done
