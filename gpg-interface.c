@@ -18,11 +18,17 @@ static const char *openpgp_verify_args[] = { "--keyid-format=long", NULL };
 static const char *openpgp_sigs[] = {
 	"-----BEGIN PGP SIGNATURE-----",
 	"-----BEGIN PGP MESSAGE-----", NULL };
+static const char *x509_verify_args[] = { NULL };
+static const char *x509_sigs[] = { "-----BEGIN SIGNED MESSAGE-----", NULL };
 
 static struct gpg_format gpg_formats[] = {
 	{ .name = "openpgp", .program = "gpg",
 	  .extra_args_verify = openpgp_verify_args,
 	  .sigs = openpgp_sigs
+	},
+	{ .name = "x509", .program = "gpgsm",
+	  .extra_args_verify = x509_verify_args,
+	  .sigs = x509_sigs
 	},
 };
 static struct gpg_format *current_format = &gpg_formats[0];
@@ -184,6 +190,9 @@ int git_gpg_config(const char *var, const char *value, void *cb)
 
 	if (!strcmp(var, "gpg.program") || !strcmp(var, "gpg.openpgp.program"))
 		fmtname = "openpgp";
+
+	if (!strcmp(var, "gpg.x509.program"))
+		fmtname = "x509";
 
 	if (fmtname) {
 		fmt = get_format_by_name(fmtname);
