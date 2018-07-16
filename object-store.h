@@ -84,6 +84,8 @@ struct packed_git {
 	char pack_name[FLEX_ARRAY]; /* more */
 };
 
+struct multi_pack_index;
+
 struct raw_object_store {
 	/*
 	 * Path to the repository's object store.
@@ -102,6 +104,13 @@ struct raw_object_store {
 	 * (see git-replace(1)).
 	 */
 	struct oidmap *replace_map;
+
+	/*
+	 * private data
+	 *
+	 * should only be accessed directly by packfile.c and midx.c
+	 */
+	struct multi_pack_index *multi_pack_index;
 
 	/*
 	 * private data
