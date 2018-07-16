@@ -2347,7 +2347,7 @@ int has_uncommitted_changes(int ignore_submodules)
 		 * We have no head (or it's corrupt); use the empty tree,
 		 * which will complain if the index is non-empty.
 		 */
-		struct tree *tree = lookup_tree(the_hash_algo->empty_tree);
+		struct tree *tree = lookup_tree(the_repository, the_hash_algo->empty_tree);
 		add_pending_object(&rev_info, &tree->object, "");
 	}
 
